@@ -141,6 +141,36 @@ deployments:
         description: The InfluxDB measurement to read data from. If not specified, the name of the output topic will be used
         required: false
         value: machine_data
+  - name: Event Detection
+    application: Event Detection
+    deploymentType: Service
+    version: 7af2e18630a36048bed41bca0abf8f1a91b7227d
+    resources:
+      cpu: 600
+      memory: 1600
+      replicas: 1
+    desiredStatus: Running
+    variables:
+      - name: input
+        inputType: InputTopic
+        description: This is the input topic for f1 data
+        required: true
+        value: influxdb
+      - name: output
+        inputType: OutputTopic
+        description: This is the output topic for hard braking events
+        required: true
+        value: detection-results
+      - name: model
+        inputType: FreeText
+        description: ''
+        required: false
+        value: jayclifford345/vibration-autoencoder
+      - name: threshold
+        inputType: FreeText
+        description: ''
+        required: false
+        value: 88
 
 # This section describes the Topics of the data pipeline
 topics:
