@@ -174,7 +174,7 @@ deployments:
   - name: write-model-result
     application: write-model-result
     deploymentType: Service
-    version: 7af2e18630a36048bed41bca0abf8f1a91b7227d
+    version: de1a0b2b9930b293aa665692b853458bbc6b4819
     resources:
       cpu: 200
       memory: 500
