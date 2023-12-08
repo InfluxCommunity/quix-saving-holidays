@@ -1,0 +1,26 @@
+name: Event Detection
+language: python
+variables:
+  - name: input
+    inputType: InputTopic
+    description: This is the input topic for f1 data
+    defaultValue: influxdb
+    required: true
+  - name: output
+    inputType: OutputTopic
+    description: This is the output topic for hard braking events
+    defaultValue: detection-results
+    required: true
+  - name: model
+    inputType: FreeText
+    description: ''
+    defaultValue: jayclifford345/vibration-autoencoder
+    required: false
+  - name: threshold
+    inputType: FreeText
+    description: ''
+    defaultValue: 88
+    required: false
+dockerfile: build/dockerfile
+runEntryPoint: main.py
+defaultFile: quix_function.py
