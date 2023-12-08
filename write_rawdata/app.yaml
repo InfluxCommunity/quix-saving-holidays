@@ -14,6 +14,7 @@ variables:
   - name: INFLUXDB_TOKEN
     inputType: FreeText
     description: Authentication token to access InfluxDB.
+    defaultValue: X1tMStKkbadbOnGhfBSGOAtEobEX1RDhRgFId4eX7mB0vq5nxF-plxJDLpa7hh1yNcivV324YFu6yKxhFR2FBA==
     required: true
   - name: INFLUXDB_ORG
     inputType: FreeText
