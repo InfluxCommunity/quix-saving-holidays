@@ -6,7 +6,7 @@ metadata:
 
 # This section describes the Deployments of the data pipeline
 deployments:
-  - name: MQTT
+  - name: "\U0001F41D MQTT"
     application: MQTT
     deploymentType: Service
     version: 7af2e18630a36048bed41bca0abf8f1a91b7227d
@@ -51,7 +51,7 @@ deployments:
         description: ''
         required: true
         secretKey: mqtt_password
-  - name: write_rawdata
+  - name: "\U0001F4BE InfluxDB Machine Data"
     application: write_rawdata
     deploymentType: Service
     version: b7cd5b4abfcfa617c711dd6ccf3a5d12a70625d7
@@ -96,7 +96,7 @@ deployments:
         description: The InfluxDB measurement to write data to. If not specified, the name of the input topic will be used
         required: false
         value: machine_data
-  - name: influxdb-query
+  - name: "\U0001F440 InfluxDB Machine Data"
     application: influxdb-query
     deploymentType: Service
     version: 4544097ac60866a4914e846af47fa99b722d4f75
@@ -141,7 +141,7 @@ deployments:
         description: The InfluxDB measurement to read data from. If not specified, the name of the output topic will be used
         required: false
         value: machine_data
-  - name: Event Detection
+  - name: "\U0001F917 Anomaly Detection"
     application: Event Detection
     deploymentType: Service
     version: 7af2e18630a36048bed41bca0abf8f1a91b7227d
@@ -171,7 +171,7 @@ deployments:
         description: ''
         required: false
         value: 88
-  - name: write-model-result
+  - name: "\U0001F4BE InfluxDB ML Result"
     application: write-model-result
     deploymentType: Service
     version: de1a0b2b9930b293aa665692b853458bbc6b4819
