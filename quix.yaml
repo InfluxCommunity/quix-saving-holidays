@@ -8,6 +8,7 @@ metadata:
 deployments:
   - name: MQTT
     application: MQTT
+    version: ba2248cceb5c1ec9f12de293855acc016e8e2564
     deploymentType: Service
     resources:
       cpu: 200
