@@ -9,7 +9,6 @@ deployments:
   - name: MQTT
     application: MQTT
     deploymentType: Service
-    version: ba2248cceb5c1ec9f12de293855acc016e8e2563
     resources:
       cpu: 200
       memory: 500
@@ -54,7 +53,6 @@ deployments:
   - name: write_rawdata
     application: write_rawdata
     deploymentType: Service
-    version: 287d0fbe673385dbe34ed402ae5e9d5676c00f19
     resources:
       cpu: 200
       memory: 500
@@ -99,7 +97,6 @@ deployments:
   - name: influxdb-query
     application: influxdb-query
     deploymentType: Service
-    version: c50c437bb888b5f15ecd0f9dcccf4190c8e26e27
     resources:
       cpu: 200
       memory: 500
@@ -144,7 +141,6 @@ deployments:
   - name: Event Detection
     application: Event Detection
     deploymentType: Service
-    version: 4229cceedd752f83c0f64f35d14f3acc85a27691
     resources:
       cpu: 600
       memory: 2100
@@ -174,7 +170,6 @@ deployments:
   - name: write-model-result
     application: write-model-result
     deploymentType: Service
-    version: 194b86b7bcd3ddd1f23fc0dc94e913fb8d76defc
     resources:
       cpu: 800
       memory: 3100
