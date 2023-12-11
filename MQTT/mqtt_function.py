@@ -13,7 +13,7 @@ class MQTTFunction:
 
     def handle_mqtt_connected(self):
         # once connection is confirmed, subscribe to the topic
-        with tracer.start_as_current_span("mqtt_connect"):
+        with self.tracer.start_as_current_span("mqtt_connect"):
             self.mqtt_client.subscribe(self.topic, qos = 1)
 
     def handle_mqtt_message(self, topic, payload, qos):
