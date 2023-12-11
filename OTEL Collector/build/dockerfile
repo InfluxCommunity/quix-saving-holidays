@@ -1,4 +1,6 @@
-FROM otel/opentelemetry-collector-contrib:0.87.0
+FROM otel/opentelemetry-collector-contrib:0.90.1
 
 COPY --from=git /project .
-ENTRYPOINT ["--config", "/otelcol-config.yml"]
+
+ENTRYPOINT ["/otelcol-contrib"]
+CMD ["--config", "/otelcol-config.yml"]
