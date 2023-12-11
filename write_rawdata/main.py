@@ -79,7 +79,7 @@ def on_event_data_received_handler(stream_consumer: qx.StreamConsumer,data: qx.E
         
         point = {"measurement": measurement_name, "tags" : metadata, "fields": fields, "time": timestamp}
 
-        print(point)
+        #print(point)
         client.write(record=point)
         
         
