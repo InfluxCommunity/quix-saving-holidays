@@ -4,3 +4,4 @@ opentelemetry-api
 opentelemetry-sdk
 opentelemetry-instrumentation-kafka-python
 opentelemetry-exporter-otlp-proto-http
+kafka
