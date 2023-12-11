@@ -14,6 +14,7 @@ exporters:
     endpoint: https://eu-central-1-1.aws.cloud2.influxdata.com/
     bucket: otel
     token: YF54Dab9knxNZMkWbldlCAcr69lzWq7dUWmjk-DP_lcv9YgaXqZCy9t0IkJiwERFnADhFqyHjYiU6tKCk22gUg==
+    metrics_schema: otel-v1
 
 connectors:
   spanmetrics:
