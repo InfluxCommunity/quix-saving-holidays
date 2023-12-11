@@ -4,3 +4,4 @@ COPY --from=git /project .
 
 ENTRYPOINT ["/otelcol-contrib"]
 CMD ["--config", "/otelcol-config.yml"]
+EXPOSE 80
