@@ -72,20 +72,29 @@ def on_event_data_received_handler(stream_consumer: qx.StreamConsumer, data: qx.
     with data:
         tracedata = jsonloads(data.metadata)
 
-        jsondata = json.loads(data.value)
-        metadata = jsondata['metadata']
-        data_points = jsondata['data']
-        fields = {k: v for d in data_points for k, v in d.items()}
-        timestamp = str(data.timestamp)
+        span_context = SpanContext(
+        trace_id=tracedata["trace_id"],
+        span_id=tracedata["span_id"],
+        is_remote=True,
+        trace_flags=TraceFlags.DEFAULT,
+        trace_state=TraceState()
+        )
+
+        with tracer.start_as_current_span("write-influxdb", context=set_span_in_context(span_context)) as span:
+            jsondata = json.loads(data.value)
+            metadata = jsondata['metadata']
+            data_points = jsondata['data']
+            fields = {k: v for d in data_points for k, v in d.items()}
+            timestamp = str(data.timestamp)
 
 
 
-        
-        point = {"measurement": measurement_name, "tags" : metadata, "fields": fields, "time": timestamp}
+            
+            point = {"measurement": measurement_name, "tags" : metadata, "fields": fields, "time": timestamp}
 
-        #print(point)
-        client.write(record=point)
-        
+            #print(point)
+            client.write(record=point)
+            
         
 
 
