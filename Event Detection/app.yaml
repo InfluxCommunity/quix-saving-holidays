@@ -14,7 +14,7 @@ variables:
   - name: model
     inputType: FreeText
     description: ''
-    defaultValue: jayclifford345/vibration-autoencoder
+    defaultValue: jayclifford345/vibration_autoencoder_v2
     required: false
   - name: threshold
     inputType: FreeText
