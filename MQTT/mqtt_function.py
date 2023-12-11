@@ -1,7 +1,8 @@
 import quixstreams as qx
 import paho.mqtt.client as paho
 from datetime import datetime
-
+from tracing import instrument
+instrument()
 
 class MQTTFunction:
 
