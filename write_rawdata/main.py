@@ -10,6 +10,9 @@ from opentelemetry.sdk.trace.export import (
     BatchSpanProcessor,
     ConsoleSpanExporter,
 )
+from opentelemetry.context import set_value
+from opentelemetry.trace import SpanContext, TraceFlags, TraceState
+from opentelemetry.trace.propagation import set_span_in_context
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.semconv.resource import ResourceAttributes
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
@@ -67,7 +70,8 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
 
 def on_event_data_received_handler(stream_consumer: qx.StreamConsumer, data: qx.EventData):
     with data:
-        print(data)
+        tracedata = jsonloads(data.metadata)
+
         jsondata = json.loads(data.value)
         metadata = jsondata['metadata']
         data_points = jsondata['data']
