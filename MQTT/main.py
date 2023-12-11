@@ -60,66 +60,66 @@ with tracer.start_as_current_span("main_execution"):
     mqtt_client.tls_set(tls_version = mqtt.client.ssl.PROTOCOL_TLS)
     mqtt_client.username_pw_set(os.environ["mqtt_username"], os.environ["mqtt_password"])
 
-# Quix injects credentials automatically to the client.
-# Alternatively, you can always pass an SDK token manually as an argument.
-quix_client = qx.QuixStreamingClient()
+    # Quix injects credentials automatically to the client.
+    # Alternatively, you can always pass an SDK token manually as an argument.
+    quix_client = qx.QuixStreamingClient()
 
-print("Opening output topic")
-producer_topic = quix_client.get_topic_producer(os.environ["output"])
+    print("Opening output topic")
+    producer_topic = quix_client.get_topic_producer(os.environ["output"])
 
-# A stream is a collection of data that belong to a single session of a single source.
-stream_producer = producer_topic.create_stream()
+    # A stream is a collection of data that belong to a single session of a single source.
+    stream_producer = producer_topic.create_stream()
 
-stream_producer.properties.name = "MQTT Data"  # Give the stream a human-readable name (for the data catalogue).
-stream_producer.properties.location = "/mqtt data"  # Save stream in specific folder to organize your workspace.
+    stream_producer.properties.name = "MQTT Data"  # Give the stream a human-readable name (for the data catalogue).
+    stream_producer.properties.location = "/mqtt data"  # Save stream in specific folder to organize your workspace.
 
-mqtt_functions = MQTTFunction(os.environ["mqtt_topic"], mqtt_client, producer_topic, tracer)
+    mqtt_functions = MQTTFunction(os.environ["mqtt_topic"], mqtt_client, producer_topic, tracer)
 
-# setting callbacks for different events to see if it works, print the message etc.
-def on_connect(client, userdata, flags, rc, properties = None):
-    if rc == 0:
-        mqtt_functions.handle_mqtt_connected()
-        print("CONNECTED!") # required for Quix to know this has connected
-    else:
-        print("ERROR: Connection refused ({})".format(rc))
+    # setting callbacks for different events to see if it works, print the message etc.
+    def on_connect(client, userdata, flags, rc, properties = None):
+        if rc == 0:
+            mqtt_functions.handle_mqtt_connected()
+            print("CONNECTED!") # required for Quix to know this has connected
+        else:
+            print("ERROR: Connection refused ({})".format(rc))
 
-# print message, useful for checking if it was successful
-def on_message(client, userdata, msg):
-    with tracer.start_as_current_span("on_message") as span:
+    # print message, useful for checking if it was successful
+    def on_message(client, userdata, msg):
+        with tracer.start_as_current_span("on_message") as span:
 
-        #print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+            #print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
-        span.add_event(
-            "message_recived",
-            {
-                "topic": str(msg.topic),
-                "QOS": str(msg.qos),
-                "payload": str(msg.payload)
-            }
-        )
+            span.add_event(
+                "message_recived",
+                {
+                    "topic": str(msg.topic),
+                    "QOS": str(msg.qos),
+                    "payload": str(msg.payload)
+                }
+            )
 
-        # handle the message in the relevant function
-        mqtt_functions.handle_mqtt_message(msg.topic, msg.payload, msg.qos)
-
-
-# print which topic was subscribed to
-def on_subscribe(client, userdata, mid, granted_qos, properties = None):
-    print("Subscribed: " + str(mid) + " " + str(granted_qos))
+            # handle the message in the relevant function
+            mqtt_functions.handle_mqtt_message(msg.topic, msg.payload, msg.qos)
 
 
-mqtt_client.on_connect = on_connect
-mqtt_client.on_message = on_message
-mqtt_client.on_subscribe = on_subscribe
+    # print which topic was subscribed to
+    def on_subscribe(client, userdata, mid, granted_qos, properties = None):
+        print("Subscribed: " + str(mid) + " " + str(granted_qos))
 
-# connect to MQTT Cloud on port 8883 (default for MQTT)
-mqtt_client.connect(os.environ["mqtt_server"], int(mqtt_port))
 
-# start the background process to handle MQTT messages
-mqtt_client.loop_start()
+    mqtt_client.on_connect = on_connect
+    mqtt_client.on_message = on_message
+    mqtt_client.on_subscribe = on_subscribe
 
-def before_shutdown():
-    # stop handling MQTT messages
-    mqtt_client.loop_stop()
+    # connect to MQTT Cloud on port 8883 (default for MQTT)
+    mqtt_client.connect(os.environ["mqtt_server"], int(mqtt_port))
 
-# Handle graceful exit of the model.
-qx.App.run(before_shutdown = before_shutdown)
+    # start the background process to handle MQTT messages
+    mqtt_client.loop_start()
+
+    def before_shutdown():
+        # stop handling MQTT messages
+        mqtt_client.loop_stop()
+
+    # Handle graceful exit of the model.
+    qx.App.run(before_shutdown = before_shutdown)
