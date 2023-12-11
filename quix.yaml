@@ -219,7 +219,7 @@ deployments:
   - name: "\U0001F4E1 OTEL Collector"
     application: OTEL Collector
     deploymentType: Service
-    version: 7da6cf3978838aab81c960c8c10fcd962133ec5e
+    version: 935d03434062ddb1af8f7f9419f324ff53f275a3
     resources:
       cpu: 200
       memory: 500
