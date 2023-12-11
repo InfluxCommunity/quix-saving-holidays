@@ -4,6 +4,20 @@ import paho.mqtt.client as paho
 from paho import mqtt
 import os
 
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import (
+    BatchSpanProcessor,
+    ConsoleSpanExporter,
+)
+
+trace.set_tracer_provider(TracerProvider())
+tracer = trace.get_tracer(__name__)
+
+# Export traces to the console (for testing purposes)
+span_processor = BatchSpanProcessor(ConsoleSpanExporter())
+trace.get_tracer_provider().add_span_processor(span_processor)
+
 
 def mqtt_protocol_version():
     if os.environ["mqtt_version"] == "3.1":
