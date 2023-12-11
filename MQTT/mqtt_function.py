@@ -21,7 +21,7 @@ class MQTTFunction:
         # if you want to handle the message in a different way
         # implement your own logic here.
         with self.tracer.start_as_current_span("mqtt_publish") as span:
-            span.set_attribute("stream_name", str(topic).replace("/", "-"))
+            self.span.set_attribute("stream_name", str(topic).replace("/", "-"))
         
             self.producer_topic.get_or_create_stream(str(topic).replace("/", "-")).events \
                 .add_timestamp(datetime.utcnow()) \
