@@ -67,6 +67,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
 
 def on_event_data_received_handler(stream_consumer: qx.StreamConsumer,data: qx.EventData):
     with data:
+        print(data)
         jsondata = json.loads(data.value)
         metadata = jsondata['metadata']
         data_points = jsondata['data']
