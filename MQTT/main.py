@@ -88,7 +88,7 @@ def on_message(client, userdata, msg):
         )
 
         # handle the message in the relevant function
-        mqtt_functions.handle_mqtt_message(msg.topic, msg.payload, msg.qos, tracer)
+        mqtt_functions.handle_mqtt_message(msg.topic, msg.payload, msg.qos)
 
 
 # print which topic was subscribed to
