@@ -62,7 +62,7 @@ stream_producer = producer_topic.create_stream()
 stream_producer.properties.name = "MQTT Data"  # Give the stream a human-readable name (for the data catalogue).
 stream_producer.properties.location = "/mqtt data"  # Save stream in specific folder to organize your workspace.
 
-mqtt_functions = MQTTFunction(os.environ["mqtt_topic"], mqtt_client, producer_topic)
+mqtt_functions = MQTTFunction(os.environ["mqtt_topic"], mqtt_client, producer_topic, tracer)
 
 # setting callbacks for different events to see if it works, print the message etc.
 def on_connect(client, userdata, flags, rc, properties = None):
@@ -74,10 +74,21 @@ def on_connect(client, userdata, flags, rc, properties = None):
 
 # print message, useful for checking if it was successful
 def on_message(client, userdata, msg):
-    print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+    with tracer.start_as_current_span("on_message") as span:
 
-    # handle the message in the relevant function
-    mqtt_functions.handle_mqtt_message(msg.topic, msg.payload, msg.qos, tracer)
+        print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+
+        span.add_event(
+            "message_recived",
+            {
+                "topic": str(msg.topic),
+                "QOS": str(msg.qos),
+                "payload": str(msg.payload))
+            }
+        )
+
+        # handle the message in the relevant function
+        mqtt_functions.handle_mqtt_message(msg.topic, msg.payload, msg.qos, tracer)
 
 
 # print which topic was subscribed to
