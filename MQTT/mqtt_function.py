@@ -18,9 +18,11 @@ class MQTTFunction:
         # publish message data to a new event
         # if you want to handle the message in a different way
         # implement your own logic here.
+        with tracer.start_as_current_span("mqtt_publish") as span:
+            span.set_attribute("stream_name", str(topic).replace("/", "-"))
         
-        self.producer_topic.get_or_create_stream(str(topic).replace("/", "-")).events \
-            .add_timestamp(datetime.utcnow()) \
-            .add_value("data", payload.decode("utf-8")) \
-            .add_tag("qos", str(qos)) \
-            .publish()
+            self.producer_topic.get_or_create_stream(str(topic).replace("/", "-")).events \
+                .add_timestamp(datetime.utcnow()) \
+                .add_value("data", payload.decode("utf-8")) \
+                .add_tag("qos", str(qos)) \
+                .publish()
