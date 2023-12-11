@@ -34,7 +34,7 @@ class MQTTFunction:
             self.producer_topic.get_or_create_stream(str(topic).replace("/", "-")).events \
                 .add_timestamp(datetime.utcnow()) \
                 .add_value("data", payload.decode("utf-8")) \
-                .add_value("otel", otel) \
+                .add_value("otel", str(otel)) \
                 .add_tag("qos", str(qos)) \
                 .publish()
             
