@@ -1,2 +1,6 @@
 quixstreams==0.5.2
 paho-mqtt
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-instrumentation-kafka-python
+opentelemetry-exporter-otlp-proto-http
