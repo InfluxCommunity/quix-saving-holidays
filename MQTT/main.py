@@ -32,10 +32,13 @@ mqtt_port = os.environ["mqtt_port"]
 if not mqtt_port.isnumeric():
     raise ValueError('mqtt_port must be a numeric value')
 
-mqtt_client = paho.Client(client_id = os.environ["Quix__Deployment__Name"], userdata = None, protocol = mqtt_protocol_version())
-# we'll be using tls
-mqtt_client.tls_set(tls_version = mqtt.client.ssl.PROTOCOL_TLS)
-mqtt_client.username_pw_set(os.environ["mqtt_username"], os.environ["mqtt_password"])
+with tracer.start_as_current_span("mqtt_authentication") as span:
+    # Logic to write data to a Quix stream
+    # ...
+    mqtt_client = paho.Client(client_id = os.environ["Quix__Deployment__Name"], userdata = None, protocol = mqtt_protocol_version())
+    # we'll be using tls
+    mqtt_client.tls_set(tls_version = mqtt.client.ssl.PROTOCOL_TLS)
+    mqtt_client.username_pw_set(os.environ["mqtt_username"], os.environ["mqtt_password"])
 
 # Quix injects credentials automatically to the client.
 # Alternatively, you can always pass an SDK token manually as an argument.
@@ -65,7 +68,7 @@ def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
     # handle the message in the relevant function
-    mqtt_functions.handle_mqtt_message(msg.topic, msg.payload, msg.qos)
+    mqtt_functions.handle_mqtt_message(msg.topic, msg.payload, msg.qos, tracer)
 
 
 # print which topic was subscribed to
