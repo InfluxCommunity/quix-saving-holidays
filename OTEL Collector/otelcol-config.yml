@@ -1,9 +1,4 @@
 receivers:
-  jaeger:
-    protocols:
-      thrift_compact:
-      thrift_http:
-
   otlp:
     protocols:
       grpc:
