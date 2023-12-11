@@ -28,7 +28,7 @@ resource = Resource.create({
 
 # Configure the OTLP gRPC exporter
 otlp_http_exporter = OTLPSpanExporter(
-    endpoint="ec2-18-153-62-79.eu-central-1.compute.amazonaws.com:4320"  # Replace with your Otel Collector HTTP endpoint
+    endpoint="ec2-18-153-62-79.eu-central-1.compute.amazonaws.com:4321"  # Replace with your Otel Collector HTTP endpoint
 )
 
 # Set the tracer provider with the defined resource
