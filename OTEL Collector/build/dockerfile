@@ -2,5 +2,8 @@ FROM otel/opentelemetry-collector-contrib:0.90.1
 
 COPY --from=git /project .
 
+USER root
+EXPOSE 80
+
 ENTRYPOINT ["/otelcol-contrib"]
 CMD ["--config", "/otelcol-config.yml"]
