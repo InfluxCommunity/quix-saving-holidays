@@ -18,6 +18,7 @@ class MQTTFunction:
         # publish message data to a new event
         # if you want to handle the message in a different way
         # implement your own logic here.
+        
         self.producer_topic.get_or_create_stream(str(topic).replace("/", "-")).events \
             .add_timestamp(datetime.utcnow()) \
             .add_value("data", payload.decode("utf-8")) \
