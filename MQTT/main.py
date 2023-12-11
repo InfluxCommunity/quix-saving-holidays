@@ -12,6 +12,7 @@ from opentelemetry.sdk.trace.export import (
 )
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.semconv.resource import ResourceAttributes
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 # ... other imports ...
 
 # Define a resource with your service name
@@ -19,14 +20,19 @@ resource = Resource.create({
     ResourceAttributes.SERVICE_NAME: "MQTT"
 })
 
+# Configure the OTLP HTTP exporter
+otlp_http_exporter = OTLPSpanExporter(
+    endpoint="http://your-otel-collector-host:4318/v1/traces",  # Replace with your Otel Collector HTTP endpoint
+    # You can add additional configuration as needed
+)
+
 # Set the tracer provider with the defined resource
 trace.set_tracer_provider(TracerProvider(resource=resource))
 tracer = trace.get_tracer(__name__)
 
-# Export traces to the console (for testing purposes)
-span_processor = BatchSpanProcessor(ConsoleSpanExporter())
+# Use the OTLP HTTP exporter in the BatchSpanProcessor
+span_processor = BatchSpanProcessor(otlp_http_exporter)
 trace.get_tracer_provider().add_span_processor(span_processor)
-
 
 def mqtt_protocol_version():
     if os.environ["mqtt_version"] == "3.1":
