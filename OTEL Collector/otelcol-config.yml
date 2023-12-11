@@ -2,7 +2,8 @@ receivers:
   otlp:
     protocols:
       http:
-        endpoint: "0.0.0.0:80"
+      grpc:
+
 
 exporters:
   influxdb:
