@@ -65,7 +65,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
         print("Write failed")
 
 
-def on_event_data_received_handler(stream_consumer: qx.StreamConsumer,data: qx.EventData):
+def on_event_data_received_handler(stream_consumer: qx.StreamConsumer, data: qx.EventData):
     with data:
         print(data)
         jsondata = json.loads(data.value)
