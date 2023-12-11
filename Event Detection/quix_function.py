@@ -49,10 +49,10 @@ class QuixFunction:
         mse_percentage = ((mse - min_mse) / (max_mse - min_mse)) * 100
 
         # Add 'is_anomalous' column to the DataFrame
-        anom_data = anom_data.iloc[timesteps - 1:].copy()
-        anom_data['is_anomalous'] = mse_percentage > self.threshold
-        anom_data['mse_percentage'] = mse_percentage
-        anom_data['threshold'] = self.threshold
+        df = df.iloc[timesteps - 1:].copy()
+        df['is_anomalous'] = mse_percentage > self.threshold
+        df['mse_percentage'] = mse_percentage
+        df['threshold'] = self.threshold
 
 
         df = df.reset_index().rename(columns={'timestamp': 'time'})
