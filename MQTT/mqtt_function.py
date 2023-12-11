@@ -23,13 +23,6 @@ class MQTTFunction:
         with self.tracer.start_as_current_span("mqtt_publish") as span:
             span.set_attribute("stream_name", str(topic).replace("/", "-"))
             span_context = span.get_span_context()
-
-            # Custom payload with trace context
-            otel = {
-                "trace_id": str(span_context.trace_id),
-                "span_id": str(span_context.span_id),
-            }
-            
         
             self.producer_topic.get_or_create_stream(str(topic).replace("/", "-")).events \
                 .add_timestamp(datetime.utcnow()) \
