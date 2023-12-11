@@ -5,16 +5,18 @@ from datetime import datetime
 
 class MQTTFunction:
 
-    def __init__(self, topic, mqtt_client: paho.Client, producer_topic: qx.TopicProducer):
+    def __init__(self, topic, mqtt_client: paho.Client, producer_topic: qx.TopicProducer, tracer):
         self.mqtt_client = mqtt_client
         self.topic = topic
         self.producer_topic = producer_topic
+        self.tracer = tracer
 
     def handle_mqtt_connected(self):
         # once connection is confirmed, subscribe to the topic
-        self.mqtt_client.subscribe(self.topic, qos = 1)
+        with tracer.start_as_current_span("mqtt_connect"):
+            self.mqtt_client.subscribe(self.topic, qos = 1)
 
-    def handle_mqtt_message(self, topic, payload, qos, tracer):
+    def handle_mqtt_message(self, topic, payload, qos):
         # publish message data to a new event
         # if you want to handle the message in a different way
         # implement your own logic here.
