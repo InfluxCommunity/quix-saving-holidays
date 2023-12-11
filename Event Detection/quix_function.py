@@ -11,6 +11,7 @@ class QuixFunction:
         self.producer_stream = producer_stream
         # Load the autoencoder model from the file
         self.model = model
+        threshold = float(os.environ["threshold"])  # Define a threshold value (in percentage)
     # Callback triggered for each new event
     def on_event_data_handler(self, stream_consumer: qx.StreamConsumer, data: qx.EventData):
         print(data.value)
@@ -23,6 +24,8 @@ class QuixFunction:
         print(df)
         df = df.set_index('timestamp')
         anom_data = df.drop(columns=['machineID'])
+
+        timesteps = 40
 
 
         # Use the Autoencoder to predict on the anomalous data
