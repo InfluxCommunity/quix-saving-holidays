@@ -11,7 +11,7 @@ class QuixFunction:
         self.producer_stream = producer_stream
         # Load the autoencoder model from the file
         self.model = model
-        threshold = float(os.environ["threshold"])  # Define a threshold value (in percentage)
+        self.threshold = float(os.environ["threshold"])  # Define a threshold value (in percentage)
     # Callback triggered for each new event
     def on_event_data_handler(self, stream_consumer: qx.StreamConsumer, data: qx.EventData):
         print(data.value)
@@ -50,17 +50,9 @@ class QuixFunction:
 
         # Add 'is_anomalous' column to the DataFrame
         anom_data = anom_data.iloc[timesteps - 1:].copy()
-        anom_data['is_anomalous'] = mse_percentage > threshold
+        anom_data['is_anomalous'] = mse_percentage > self.threshold
         anom_data['mse_percentage'] = mse_percentage
-        anom_data['threshold'] = threshold
-
-
-        # Detect anomalies by comparing the scaled reconstruction error to some threshold
-        threshold = float(os.environ["threshold"])  # Define a threshold value (in percentage)
-
-        # Add 'is_anomalous' column to the DataFrame
-        df['is_anomalous'] = mse_percentage > threshold
-        df['mse_percentage'] = mse_percentage
+        anom_data['threshold'] = self.threshold
 
 
         df = df.reset_index().rename(columns={'timestamp': 'time'})
