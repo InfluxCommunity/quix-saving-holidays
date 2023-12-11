@@ -22,7 +22,7 @@ resource = Resource.create({
 
 # Configure the OTLP HTTP exporter
 otlp_http_exporter = OTLPSpanExporter(
-    endpoint="http://your-otel-collector-host:4318/v1/traces",  # Replace with your Otel Collector HTTP endpoint
+    endpoint="http://localhost:4318/v1/traces",  # Replace with your Otel Collector HTTP endpoint
     # You can add additional configuration as needed
 )
 
