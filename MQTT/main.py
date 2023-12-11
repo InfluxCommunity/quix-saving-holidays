@@ -10,6 +10,9 @@ from opentelemetry.sdk.trace.export import (
     BatchSpanProcessor,
     ConsoleSpanExporter,
 )
+from opentelemetry.context import set_value
+from opentelemetry.trace import SpanContext, TraceFlags, TraceState
+from opentelemetry.trace.propagation import set_span_in_context
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.semconv.resource import ResourceAttributes
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
