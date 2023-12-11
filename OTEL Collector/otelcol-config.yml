@@ -8,7 +8,7 @@ exporters:
   influxdb:
     endpoint: https://eu-central-1-1.aws.cloud2.influxdata.com/
     bucket: quix-otel
-    token: YF54Dab9knxNZMkWbldlCAcr69lzWq7dUWmjk-DP_lcv9YgaXqZCy9t0IkJiwERFnADhFqyHjYiU6tKCk22gUg==
+    token: ICY-qzrAuYAmPJOR3UmA-6Y3haaUg0nkrd0cR3E1PlobcCG-78er_ddW4M49qoobdChZg6bpVs2hA-nntITRSQ==
     metrics_schema: otel-v1
 
 connectors:
