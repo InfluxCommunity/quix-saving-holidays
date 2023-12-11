@@ -25,7 +25,13 @@ resource = Resource.create({
 otlp_http_exporter = OTLPSpanExporter(
     endpoint="http://ec2-18-153-62-79.eu-central-1.compute.amazonaws.com:4320/v1/traces"  # Replace with your Otel Collector HTTP endpoint
 )
+# Set the tracer provider with the defined resource
+trace.set_tracer_provider(TracerProvider(resource=resource))
+tracer = trace.get_tracer(__name__)
 
+# Use the OTLP HTTP exporter in the BatchSpanProcessor
+span_processor = BatchSpanProcessor(otlp_http_exporter)
+trace.get_tracer_provider().add_span_processor(span_processor)
 
 
 client = qx.QuixStreamingClient()
