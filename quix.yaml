@@ -219,22 +219,16 @@ deployments:
   - name: "\U0001F4E1 OTEL Collector"
     application: OTEL Collector
     deploymentType: Service
-    version: 25d3ca0726b0ff3ec8278425f6dc76863e640252
+    version: af2f693f6029d6f4c60ebaa4792634b7f822b08e
     resources:
       cpu: 200
       memory: 500
       replicas: 1
+    publicAccess:
+      enabled: true
+      urlPrefix: otelcollector-25d3ca0
     desiredStatus: Running
-    variables:
-      - name: input
-        inputType: InputTopic
-        description: Name of the input topic to listen to.
-        required: false
-      - name: output
-        inputType: OutputTopic
-        description: Name of the output topic to write to.
-        required: false
-        value: transform
+    variables: []
 
 # This section describes the Topics of the data pipeline
 topics:
