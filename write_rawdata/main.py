@@ -70,7 +70,7 @@ def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.Dat
 
 def on_event_data_received_handler(stream_consumer: qx.StreamConsumer, data: qx.EventData):
     with data:
-        tracedata = jsonloads(data.metadata)
+        tracedata = json.loads(data.metadata)
 
         span_context = SpanContext(
         trace_id=tracedata["trace_id"],
