@@ -76,7 +76,7 @@ def on_connect(client, userdata, flags, rc, properties = None):
 def on_message(client, userdata, msg):
     with tracer.start_as_current_span("on_message") as span:
 
-        print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+        #print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
         span.add_event(
             "message_recived",
