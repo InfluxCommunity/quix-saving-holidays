@@ -29,12 +29,12 @@ class MQTTFunction:
                 "trace_id": str(span_context.trace_id),
                 "span_id": str(span_context.span_id),
             }
-            otel = str(otel)
+            
         
             self.producer_topic.get_or_create_stream(str(topic).replace("/", "-")).events \
                 .add_timestamp(datetime.utcnow()) \
                 .add_value("data", payload.decode("utf-8")) \
-                .add_value("otel", otel.decode("utf-8")) \
+                .add_value("otel", otel) \
                 .add_tag("qos", str(qos)) \
                 .publish()
             
