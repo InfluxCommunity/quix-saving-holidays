@@ -10,8 +10,17 @@ from opentelemetry.sdk.trace.export import (
     BatchSpanProcessor,
     ConsoleSpanExporter,
 )
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.semconv.resource import ResourceAttributes
+# ... other imports ...
 
-trace.set_tracer_provider(TracerProvider())
+# Define a resource with your service name
+resource = Resource.create({
+    ResourceAttributes.SERVICE_NAME: "MQTT"
+})
+
+# Set the tracer provider with the defined resource
+trace.set_tracer_provider(TracerProvider(resource=resource))
 tracer = trace.get_tracer(__name__)
 
 # Export traces to the console (for testing purposes)
