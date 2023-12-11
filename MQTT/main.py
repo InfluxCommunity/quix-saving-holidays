@@ -32,7 +32,7 @@ mqtt_port = os.environ["mqtt_port"]
 if not mqtt_port.isnumeric():
     raise ValueError('mqtt_port must be a numeric value')
 
-with tracer.start_as_current_span("mqtt_authentication") as span:
+with tracer.start_as_current_span("main_execution"):
     # Logic to write data to a Quix stream
     # ...
     mqtt_client = paho.Client(client_id = os.environ["Quix__Deployment__Name"], userdata = None, protocol = mqtt_protocol_version())
