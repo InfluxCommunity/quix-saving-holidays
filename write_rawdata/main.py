@@ -74,8 +74,8 @@ def on_event_data_received_handler(stream_consumer: qx.StreamConsumer, data: qx.
         tracedata = data.tags
 
         span_context = SpanContext(
-        trace_id=tracedata["trace_id"],
-        span_id=tracedata["span_id"],
+        trace_id=int(tracedata["trace_id"]),
+        span_id=int(tracedata["span_id"]),
         is_remote=True,
         trace_flags=TraceFlags.DEFAULT,
         trace_state=TraceState()
