@@ -4,6 +4,29 @@ import pandas as pd
 from influxdb_client_3 import InfluxDBClient3, Point, WritePrecision
 import ast
 import json
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import (
+    BatchSpanProcessor,
+    ConsoleSpanExporter,
+)
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.semconv.resource import ResourceAttributes
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+#from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+# ... other imports ...
+
+# Define a resource with your service name
+resource = Resource.create({
+    ResourceAttributes.SERVICE_NAME: "MQTT"
+})
+
+# Configure the OTLP HTTP exporter
+otlp_http_exporter = OTLPSpanExporter(
+    endpoint="http://ec2-18-153-62-79.eu-central-1.compute.amazonaws.com:4320/v1/traces"  # Replace with your Otel Collector HTTP endpoint
+)
+
+
 
 client = qx.QuixStreamingClient()
 
