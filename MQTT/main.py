@@ -83,7 +83,7 @@ def on_message(client, userdata, msg):
             {
                 "topic": str(msg.topic),
                 "QOS": str(msg.qos),
-                "payload": str(msg.payload))
+                "payload": str(msg.payload)
             }
         )
 
