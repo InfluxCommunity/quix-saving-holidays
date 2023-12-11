@@ -227,7 +227,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: otelcollector-61fa13b
-    desiredStatus: Running
+    desiredStatus: Stopped
     variables:
       - name: input
         inputType: InputTopic
