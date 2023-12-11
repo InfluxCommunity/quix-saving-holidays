@@ -227,7 +227,7 @@ deployments:
     publicAccess:
       enabled: true
       urlPrefix: otelcollector-25d3ca0
-    desiredStatus: Stopped
+    desiredStatus: Running
     variables: []
 
 # This section describes the Topics of the data pipeline
