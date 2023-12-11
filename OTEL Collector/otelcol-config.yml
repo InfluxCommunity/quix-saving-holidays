@@ -2,7 +2,7 @@ receivers:
   otlp:
     protocols:
       http:
-        endpoint: 0.0.0.0:80
+        endpoint: 0.0.0.0:8080
       grpc:
 
 
