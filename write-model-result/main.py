@@ -4,6 +4,37 @@ import pandas as pd
 import influxdb_client_3 as InfluxDBClient3
 import ast
 import datetime
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import (
+    BatchSpanProcessor,
+    ConsoleSpanExporter,
+)
+from opentelemetry.context import set_value
+from opentelemetry.trace import SpanContext, TraceFlags, TraceState
+from opentelemetry.trace.propagation import set_span_in_context
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.semconv.resource import ResourceAttributes
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+#from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+# ... other imports ...
+
+# Define a resource with your service name
+resource = Resource.create({
+    ResourceAttributes.SERVICE_NAME: "RawData_InfluxDB_Exporter"
+})
+
+# Configure the OTLP HTTP exporter
+otlp_http_exporter = OTLPSpanExporter(
+    endpoint="http://ec2-18-153-62-79.eu-central-1.compute.amazonaws.com:4320/v1/traces"  # Replace with your Otel Collector HTTP endpoint
+)
+# Set the tracer provider with the defined resource
+trace.set_tracer_provider(TracerProvider(resource=resource))
+tracer = trace.get_tracer(__name__)
+
+# Use the OTLP HTTP exporter in the BatchSpanProcessor
+span_processor = BatchSpanProcessor(otlp_http_exporter)
+trace.get_tracer_provider().add_span_processor(span_processor)
 
 
 client = qx.QuixStreamingClient()
