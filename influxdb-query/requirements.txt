@@ -1,3 +1,8 @@
 quixstreams
 influxdb3-python
 pandas
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-instrumentation-kafka-python
+opentelemetry-exporter-otlp-proto-http
+opentelemetry-exporter-otlp-proto-grpc
