@@ -67,48 +67,42 @@ class QuixFunction:
             timesteps = 40
             span.add_event("timesteps: " + str(timesteps))
 
-            ctx = trace.get_current_span().get_span_context()
-            link_from_span_1 = trace.Link(ctx)
 
-        with tracer.start_as_current_span("predict", links=[link_from_span_1]) as span:
-        # Use the Autoencoder to predict on the anomalous data
-            scaler = StandardScaler()
-            scaled_anom_data= scaler.fit_transform(anom_data)
-            predictions = self.model.predict(scaled_anom_data)
+            with tracer.start_as_current_span("predict") as span:
+            # Use the Autoencoder to predict on the anomalous data
+                scaler = StandardScaler()
+                scaled_anom_data= scaler.fit_transform(anom_data)
+                predictions = self.model.predict(scaled_anom_data)
 
-            # Assuming the last prediction of each sequence corresponds to the next timestamp
-            relevant_predictions = predictions[:, -1, :].squeeze()
+                # Assuming the last prediction of each sequence corresponds to the next timestamp
+                relevant_predictions = predictions[:, -1, :].squeeze()
 
-            # Adjust the length of normal_scaled to match relevant_predictions
-            # This skips the first (timesteps - 1) entries, as they don't have corresponding predictions
-            scaled_anom_adjusted = scaled_anom_data[timesteps - 1:]
+                # Adjust the length of normal_scaled to match relevant_predictions
+                # This skips the first (timesteps - 1) entries, as they don't have corresponding predictions
+                scaled_anom_adjusted = scaled_anom_data[timesteps - 1:]
 
-            # Calculate MSE for each timestamp
-            mse = np.power(scaled_anom_adjusted - relevant_predictions, 2).mean(axis=1)
-
-            ctx = trace.get_current_span().get_span_context()
-            link_from_span = trace.Link(ctx)
-
-        with tracer.start_as_current_span("MSE_Calculation", links=[link_from_span]) as span:
-            # Scale the MSE to a percentage
-            min_mse = np.min(mse)
-            max_mse = np.max(mse)
-            mse_percentage = ((mse - min_mse) / (max_mse - min_mse)) * 100
-
-            span.add_event("mse_percentage: " + str(mse_percentage))
-
-            # Add 'is_anomalous' column to the DataFrame
-            df = df.iloc[timesteps - 1:].copy()
-            df['is_anomalous'] = mse_percentage > self.threshold
-            df['mse_percentage'] = mse_percentage
-            df['threshold'] = self.threshold
-            
-            ctx = trace.get_current_span().get_span_context()
-            link_from_span = trace.Link(ctx)
+                # Calculate MSE for each timestamp
+                mse = np.power(scaled_anom_adjusted - relevant_predictions, 2).mean(axis=1)
 
 
-        with tracer.start_as_current_span("Publish_Prediction", links=[link_from_span]) as span:
-            df = df.reset_index().rename(columns={'timestamp': 'time'})
-            span.add_event("dataframe size: " + str(df.size))
-            print(df)
-            self.producer_stream.timeseries.buffer.publish(df)  # Send filtered data to output topic›
+                with tracer.start_as_current_span("MSE_Calculation") as span:
+                    # Scale the MSE to a percentage
+                    min_mse = np.min(mse)
+                    max_mse = np.max(mse)
+                    mse_percentage = ((mse - min_mse) / (max_mse - min_mse)) * 100
+
+                    span.add_event("mse_percentage: " + str(mse_percentage))
+
+                    # Add 'is_anomalous' column to the DataFrame
+                    df = df.iloc[timesteps - 1:].copy()
+                    df['is_anomalous'] = mse_percentage > self.threshold
+                    df['mse_percentage'] = mse_percentage
+                    df['threshold'] = self.threshold
+                
+
+
+                    with tracer.start_as_current_span("Publish_Prediction") as span:
+                        df = df.reset_index().rename(columns={'timestamp': 'time'})
+                        span.add_event("dataframe size: " + str(df.size))
+                        print(df)
+                        self.producer_stream.timeseries.buffer.publish(df)  # Send filtered data to output topic›
