@@ -39,6 +39,7 @@ tracer = trace.get_tracer(__name__)
 span_processor = BatchSpanProcessor(otlp_http_exporter)
 trace.get_tracer_provider().add_span_processor(span_processor)
 
+
 class QuixFunction:
     def __init__(self, consumer_stream: qx.StreamConsumer, producer_stream: qx.StreamProducer, model):
         self.consumer_stream = consumer_stream
