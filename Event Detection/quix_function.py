@@ -61,7 +61,7 @@ class QuixFunction:
         with tracer.start_as_current_span("dataframe_clean") as span:
 
             
-            span.add_event("dataframe size: " + str(df.size()))
+            span.add_event("dataframe size: " + str(df.size)
             df = df.set_index('timestamp')
             anom_data = df.drop(columns=['machineID'])
             timesteps = 40
