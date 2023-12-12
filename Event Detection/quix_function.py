@@ -57,14 +57,14 @@ class QuixFunction:
     def on_dataframe_handler(self, stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
         # Normalize the anomalous data
         print(df)
-        with self.tracer.start_as_current_span("dataframe_clean") as span:
+        with tracer.start_as_current_span("dataframe_clean") as span:
         
             df = df.set_index('timestamp')
             anom_data = df.drop(columns=['machineID'])
 
             timesteps = 40
 
-        with self.tracer.start_as_current_span("predict") as span:
+        with tracer.start_as_current_span("predict") as span:
         # Use the Autoencoder to predict on the anomalous data
             scaler = StandardScaler()
             scaled_anom_data= scaler.fit_transform(anom_data)
@@ -80,7 +80,7 @@ class QuixFunction:
             # Calculate MSE for each timestamp
             mse = np.power(scaled_anom_adjusted - relevant_predictions, 2).mean(axis=1)
 
-        with self.tracer.start_as_current_span("MSE_Calculation") as span:
+        with tracer.start_as_current_span("MSE_Calculation") as span:
             # Scale the MSE to a percentage
             min_mse = np.min(mse)
             max_mse = np.max(mse)
@@ -93,7 +93,7 @@ class QuixFunction:
             df['threshold'] = self.threshold
 
 
-        with self.tracer.start_as_current_span("Publish_Prediction") as span:
+        with tracer.start_as_current_span("Publish_Prediction") as span:
             df = df.reset_index().rename(columns={'timestamp': 'time'})
             print(df)
 
