@@ -106,43 +106,33 @@ def get_data():
 
     # Run in a loop until the main thread is terminated
     while run:
-        try:
-            with tracer.start_as_current_span("influxdb") as span:
+        with tracer.start_as_current_span("influxdb") as span:
+            try:
+                    #print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
-                #print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+                    query = "SHOW TAG VALUES WITH KEY = \"machineID\""
+                    table = client.query(query=query, language="influxql")
+                    machines = table["value"].to_pylist()
 
-                span.add_event(
-                    "message_recived",
-                    {
-                        "topic": str(msg.topic),
-                        "QOS": str(msg.qos),
-                        "payload": str(msg.payload)
-                    }
-                )
+                    for machine in machines:
+                        # Query InfluxDB 3.0 usinfg influxql or sql
+                        table = client.query(query=f"SELECT vibration, machineID FROM {measurement_name} WHERE time >= now() - 2m AND machineID = '{machine}'", language="influxql")
 
-            query = "SHOW TAG VALUES WITH KEY = \"machineID\""
-            table = client.query(query=query, language="influxql")
-            machines = table["value"].to_pylist()
+                        # Convert the result to a pandas dataframe. Required to be processed through Quix. 
+                        df = table.to_pandas().drop(columns=["iox::measurement"])
 
-            for machine in machines:
-                # Query InfluxDB 3.0 usinfg influxql or sql
-                table = client.query(query=f"SELECT vibration, machineID FROM {measurement_name} WHERE time >= now() - 2m AND machineID = '{machine}'", language="influxql")
+                        # If there are rows to write to the stream at this time
+                        stream_producer.timeseries.buffer.publish(df)
+                        print(df.head())
+                        sleep(0.5)
 
-                # Convert the result to a pandas dataframe. Required to be processed through Quix. 
-                df = table.to_pandas().drop(columns=["iox::measurement"])
-
-                # If there are rows to write to the stream at this time
-                stream_producer.timeseries.buffer.publish(df)
-                print(df.head())
-                sleep(0.5)
-
-                # Wait for the next interval
-            sleep(interval_seconds)
-                 
-        except Exception as e:
-            print("query failed", flush=True)
-            print(f"error: {e}",  flush=True)
-            sleep(1)
+                        # Wait for the next interval
+                    sleep(interval_seconds)
+                        
+            except Exception as e:
+                    print("query failed", flush=True)
+                    print(f"error: {e}",  flush=True)
+                    sleep(1)
 
 
 
