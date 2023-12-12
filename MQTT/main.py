@@ -75,7 +75,7 @@ if not mqtt_port.isnumeric():
     mqtt_functions = MQTTFunction(os.environ["mqtt_topic"], mqtt_client, producer_topic, tracer)
 
     # setting callbacks for different events to see if it works, print the message etc.
-    def on_connect(client, userdata, flags, rc, properties = None):
+def on_connect(client, userdata, flags, rc, properties = None):
         if rc == 0:
             mqtt_functions.handle_mqtt_connected()
             print("CONNECTED!") # required for Quix to know this has connected
@@ -83,7 +83,7 @@ if not mqtt_port.isnumeric():
             print("ERROR: Connection refused ({})".format(rc))
 
     # print message, useful for checking if it was successful
-    def on_message(client, userdata, msg):
+def on_message(client, userdata, msg):
         with tracer.start_as_current_span("on_message") as span:
 
             #print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
@@ -102,8 +102,8 @@ if not mqtt_port.isnumeric():
 
 
     # print which topic was subscribed to
-    def on_subscribe(client, userdata, mid, granted_qos, properties = None):
-        print("Subscribed: " + str(mid) + " " + str(granted_qos))
+def on_subscribe(client, userdata, mid, granted_qos, properties = None):
+    print("Subscribed: " + str(mid) + " " + str(granted_qos))
 
 
     mqtt_client.on_connect = on_connect
