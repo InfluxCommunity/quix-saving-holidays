@@ -9,7 +9,7 @@ deployments:
   - name: "\U0001F41D MQTT"
     application: MQTT
     deploymentType: Service
-    version: 8bc25f55a4542a136e920329b6946bc6a23fa6da
+    version: f6324b74cbe8f9bb4cd4ace9809c11be60874761
     resources:
       cpu: 200
       memory: 500
