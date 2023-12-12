@@ -144,7 +144,7 @@ deployments:
   - name: "\U0001F917 Anomaly Detection"
     application: Event Detection
     deploymentType: Service
-    version: 260c2056f5d1cbc0af867e93071cde8ece73ad3e
+    version: 79b222ced22489be7688e338bceb2e68bf601128
     resources:
       cpu: 600
       memory: 1600
