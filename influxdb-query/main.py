@@ -106,7 +106,7 @@ def get_data():
 
     # Run in a loop until the main thread is terminated
     while run:
-        with tracer.start_as_current_span("influxdb") as span:
+        with tracer.start_as_current_span("query") as span:
             try:
                     #print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
