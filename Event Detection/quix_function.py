@@ -48,6 +48,7 @@ class QuixFunction:
         self.model = model
         self.threshold = float(os.environ["threshold"])  # Define a threshold value (in percentage)
     # Callback triggered for each new event
+
     def on_event_data_handler(self, stream_consumer: qx.StreamConsumer, data: qx.EventData):
         print(data.value)
         # Transform your data here.
@@ -66,7 +67,10 @@ class QuixFunction:
             timesteps = 40
             span.add_event("timesteps: " + str(timesteps))
 
-        with tracer.start_as_current_span("predict") as span:
+            ctx = trace.get_current_span().get_span_context()
+            link_from_span_1 = trace.Link(ctx)
+
+        with tracer.start_as_current_span("predict", links=[link_from_span_1]) as span:
         # Use the Autoencoder to predict on the anomalous data
             scaler = StandardScaler()
             scaled_anom_data= scaler.fit_transform(anom_data)
@@ -82,22 +86,28 @@ class QuixFunction:
             # Calculate MSE for each timestamp
             mse = np.power(scaled_anom_adjusted - relevant_predictions, 2).mean(axis=1)
 
-        with tracer.start_as_current_span("MSE_Calculation") as span:
+            ctx = trace.get_current_span().get_span_context()
+            link_from_span = trace.Link(ctx)
+
+        with tracer.start_as_current_span("MSE_Calculation", links=[link_from_span]) as span:
             # Scale the MSE to a percentage
             min_mse = np.min(mse)
             max_mse = np.max(mse)
             mse_percentage = ((mse - min_mse) / (max_mse - min_mse)) * 100
+
+            span.add_event("mse_percentage: " + str(mse_percentage))
 
             # Add 'is_anomalous' column to the DataFrame
             df = df.iloc[timesteps - 1:].copy()
             df['is_anomalous'] = mse_percentage > self.threshold
             df['mse_percentage'] = mse_percentage
             df['threshold'] = self.threshold
+            
+            ctx = trace.get_current_span().get_span_context()
+            link_from_span = trace.Link(ctx)
 
 
-        with tracer.start_as_current_span("Publish_Prediction") as span:
+        with tracer.start_as_current_span("Publish_Prediction", links=[link_from_span]) as span:
             df = df.reset_index().rename(columns={'timestamp': 'time'})
             print(df)
-
-
             self.producer_stream.timeseries.buffer.publish(df)  # Send filtered data to output topic›
