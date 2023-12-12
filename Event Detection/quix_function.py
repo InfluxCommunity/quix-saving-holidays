@@ -58,11 +58,13 @@ class QuixFunction:
         # Normalize the anomalous data
         print(df)
         with tracer.start_as_current_span("dataframe_clean") as span:
-        
+
+            
+            span.add_event("dataframe size: " + str(df.size()))
             df = df.set_index('timestamp')
             anom_data = df.drop(columns=['machineID'])
-
             timesteps = 40
+            span.add_event("timesteps: " + str(timesteps))
 
         with tracer.start_as_current_span("predict") as span:
         # Use the Autoencoder to predict on the anomalous data
