@@ -54,7 +54,7 @@ deployments:
   - name: "\U0001F4BE InfluxDB Machine Data"
     application: write_rawdata
     deploymentType: Service
-    version: b7cd5b4abfcfa617c711dd6ccf3a5d12a70625d7
+    version: 8e25674339b910d0b9470c02d8d77a427fda56e0
     resources:
       cpu: 200
       memory: 500
