@@ -20,7 +20,7 @@ from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExport
 
 # Define a resource with your service name
 resource = Resource.create({
-    ResourceAttributes.SERVICE_NAME: "MQTT"
+    ResourceAttributes.SERVICE_NAME: "InfluxDB_Query"
 })
 
 # Configure the OTLP HTTP exporter
