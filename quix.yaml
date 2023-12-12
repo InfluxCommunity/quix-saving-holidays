@@ -99,7 +99,7 @@ deployments:
   - name: "\U0001F440 InfluxDB Machine Data"
     application: influxdb-query
     deploymentType: Service
-    version: 4544097ac60866a4914e846af47fa99b722d4f75
+    version: f6b91c241df76737a6567c1775f290e123ec32f9
     resources:
       cpu: 200
       memory: 500
