@@ -21,7 +21,7 @@ from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExport
 
 # Define a resource with your service name
 resource = Resource.create({
-    ResourceAttributes.SERVICE_NAME: "RawData_InfluxDB_Exporter"
+    ResourceAttributes.SERVICE_NAME: "ML_InfluxDB_Exporter"
 })
 
 # Configure the OTLP HTTP exporter
@@ -56,20 +56,21 @@ client = InfluxDBClient3.InfluxDBClient3(token=os.environ["INFLUXDB_TOKEN"],
 
 
 def on_dataframe_received_handler(stream_consumer: qx.StreamConsumer, df: pd.DataFrame):
-    try:
-        # Reformat the dataframe to match the InfluxDB format
-        df = df.rename(columns={'timestamp': 'time'})
-        df = df.set_index('time')
-        df["stream_id"] = stream_consumer.stream_id
+    with tracer.start_as_current_span("write-influxdb") as span:
+        try:
+            # Reformat the dataframe to match the InfluxDB format
+            df = df.rename(columns={'timestamp': 'time'})
+            df = df.set_index('time')
+            df["stream_id"] = stream_consumer.stream_id
 
-        print(df)
+            print(df)
 
-        client.write(df, data_frame_measurement_name=measurement_name, data_frame_tag_columns=tag_columns) 
+            client.write(df, data_frame_measurement_name=measurement_name, data_frame_tag_columns=tag_columns) 
 
-        print(f"{str(datetime.datetime.utcnow())}: Persisted {df.shape[0]} rows. Stream_ID=${stream_consumer.stream_id}")
-    except Exception as e:
-        print("{str(datetime.datetime.utcnow())}: Write failed")
-        print(e)
+            print(f"{str(datetime.datetime.utcnow())}: Persisted {df.shape[0]} rows. Stream_ID=${stream_consumer.stream_id}")
+        except Exception as e:
+            print("{str(datetime.datetime.utcnow())}: Write failed")
+            print(e)
 
 
 def on_stream_received_handler(stream_consumer: qx.StreamConsumer):
