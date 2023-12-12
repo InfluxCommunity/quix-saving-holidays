@@ -174,7 +174,7 @@ deployments:
   - name: "\U0001F4BE InfluxDB ML Result"
     application: write-model-result
     deploymentType: Service
-    version: de1a0b2b9930b293aa665692b853458bbc6b4819
+    version: 5b52ed4d8d4f60c8d984c976d6902d023287ff1c
     resources:
       cpu: 200
       memory: 500
