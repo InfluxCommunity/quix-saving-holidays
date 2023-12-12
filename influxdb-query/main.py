@@ -28,6 +28,13 @@ otlp_http_exporter = OTLPSpanExporter(
     endpoint="http://ec2-18-153-62-79.eu-central-1.compute.amazonaws.com:4320/v1/traces"  # Replace with your Otel Collector HTTP endpoint
 )
 
+# Set the tracer provider with the defined resource
+trace.set_tracer_provider(TracerProvider(resource=resource))
+tracer = trace.get_tracer(__name__)
+
+# Use the OTLP HTTP exporter in the BatchSpanProcessor
+span_processor = BatchSpanProcessor(otlp_http_exporter)
+trace.get_tracer_provider().add_span_processor(span_processor)
 
 # Helper function to convert time intervals (like 1h, 2m) into seconds for easier processing.
 # This function is useful for determining the frequency of certain operations.
@@ -100,6 +107,19 @@ def get_data():
     # Run in a loop until the main thread is terminated
     while run:
         try:
+            with tracer.start_as_current_span("influxdb") as span:
+
+                #print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+
+                span.add_event(
+                    "message_recived",
+                    {
+                        "topic": str(msg.topic),
+                        "QOS": str(msg.qos),
+                        "payload": str(msg.payload)
+                    }
+                )
+
             query = "SHOW TAG VALUES WITH KEY = \"machineID\""
             table = client.query(query=query, language="influxql")
             machines = table["value"].to_pylist()
