@@ -5,6 +5,30 @@ from threading import Thread
 import influxdb_client_3 as InfluxDBClient3
 from time import sleep
 
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import (
+    BatchSpanProcessor,
+    ConsoleSpanExporter,
+)
+
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.semconv.resource import ResourceAttributes
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+#from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+# ... other imports ...
+
+# Define a resource with your service name
+resource = Resource.create({
+    ResourceAttributes.SERVICE_NAME: "MQTT"
+})
+
+# Configure the OTLP HTTP exporter
+otlp_http_exporter = OTLPSpanExporter(
+    endpoint="http://ec2-18-153-62-79.eu-central-1.compute.amazonaws.com:4320/v1/traces"  # Replace with your Otel Collector HTTP endpoint
+)
+
+
 # Helper function to convert time intervals (like 1h, 2m) into seconds for easier processing.
 # This function is useful for determining the frequency of certain operations.
 def interval_to_seconds(interval):
