@@ -92,8 +92,9 @@ class QuixFunction:
             df['threshold'] = self.threshold
 
 
-        df = df.reset_index().rename(columns={'timestamp': 'time'})
-        print(df)
+        with self.tracer.start_as_current_span("Publish_Prediction") as span:
+            df = df.reset_index().rename(columns={'timestamp': 'time'})
+            print(df)
 
 
-        self.producer_stream.timeseries.buffer.publish(df)  # Send filtered data to output topic›
+            self.producer_stream.timeseries.buffer.publish(df)  # Send filtered data to output topic›
